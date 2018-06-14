@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}Add Care Home{% endblock %}
+
+{% block body %}
+    {% from 'macros/formhelpers.html' import render_field, render_checkbox %}
+    <form method="POST" action="/carehome/{{id}}/edit" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        {{ render_field(form.operator_name, class_="form-control") }}
+        {{ render_field(form.carehome_name, class_="form-control") }}
+        {{ render_field(form.address_street, class_="form-control") }}
+        {{ render_field(form.address_city, class_="form-control",) }}
+        {{ render_field(form.address_state, class_="form-control") }}
+        {{ render_field(form.address_zip, class_="form-control") }}
+        {{ render_field(form.email, class_="form-control") }}
+        {{ render_field(form.phone, class_="form-control") }}
+        {{ render_field(form.certification, class_="form-control") }}
+        {{ render_field(form.license_expiration, class_="forrm-control") }}
+        {{ render_field(form.case_management_company, class_="form-control") }}
+        {{ render_field(form.subs, class_="form-control") }}
+        {{ render_field(form.carehome_open_year, class_="form-control") }}
+        {{ render_field(form.type, class_="form-control") }}
+        {{ render_field(form.open_rooms, class_="form-control") }}
+        {{ render_field(form.shared_rooms, class_="form-control") }}
+        {{ render_field(form.min_price_shared, class_="form-control") }}
+        {{ render_field(form.max_price_shared, class_="form-control") }}
+        {{ render_field(form.private_rooms, class_="form-control") }}
+        {{ render_field(form.min_price_private, class_="form-control") }}
+        {{ render_field(form.max_price_private, class_="form-control") }}
+        {{ render_checkbox(form.patient_gender, class_="form-control") }}
+        {{ render_checkbox(form.patient_age, class_="form-control") }}
+        {{ render_checkbox(form.patient_private, class_="form-control") }}
+        {{ render_checkbox(form.patient_medicaid, class_="form-control") }}
+        {{ render_checkbox(form.patient_ssi, class_="form-control") }}
+        {{ render_checkbox(form.patient_walking_device, class_="form-control") }}
+        {{ render_checkbox(form.patient_behavioral, class_="form-control") }}
+        {{ render_checkbox(form.patient_dialysis, class_="form-control") }}
+        {{ render_checkbox(form.patient_hospice, class_="form-control") }}
+        {{ render_checkbox(form.patient_insulin, class_="form-control") }}
+        {{ render_checkbox(form.patient_tube_feed, class_="form-control") }}
+        {{ render_checkbox(form.patient_wounds, class_="form-control") }}
+        {{ render_checkbox(form.patient_weight, class_="form-control") }}
+        <input type="submit" value="Submit" class="btn btn-primary">
+    </form>
+{% endblock %}

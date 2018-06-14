@@ -1,0 +1,77 @@
+{% extends 'layout.html' %} {% block title %}Care Homes{% endblock %} 
+
+{% block styles %}
+<style>
+
+    th, tr {
+        cursor: pointer;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css"> 
+{% endblock %} 
+
+{% block body %}
+    <input type="search" id="carehome-filter" placeholder="Filter">
+    <table id="carehomes-table" class="table table-responsive table-striped display" style="width: 100%">
+        <thead>
+            <tr>   
+                <th class="carehome-sorter">Operator</th>
+                <th class="carehome-sorter">Carehome</th>
+                <th class="carehome-sorter">City</th>
+                <th class="carehome-sorter">Phone</th>
+                <th class="carehome-sorter">Email</th>
+                <th class="carehome-sorter">Certification</th>
+                <th class="carehome-sorter">Type</th>
+                <th class="carehome-sorter">Rooms</th>
+                <th class="carehome-sorter">Openings</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for carehome in carehomes %}
+            <tr class="carehome" data-id="{{ carehome.id }}">
+                <td>{{ carehome.operator.name }}</td>
+                <td>{{ carehome.name }}</td>
+                <td>{{ carehome.operator.address.city }}</td>
+                <td>{{ carehome.operator.phone }}</td>
+                <td>{{ carehome.operator.address.email }}</td>
+                <td>{{ carehome.operator.certification.value }}</td>
+                <td>{{ carehome.type.value }}</td>
+                {% if carehome.rooms|length > 1 %}
+                    <td>
+                        {{ carehome.rooms[0].type.value }}({{ carehome.rooms[0].amount }}), {{ carehome.rooms[1].type.value }}({{ carehome.rooms[1].amount }})
+                    </td>
+                {% else %}
+                <td>{{ carehome.rooms[0].type }}({{carehome.rooms[0].amount}})</td>
+                {% endif %}
+                <td>{{ carehome.open_rooms }}</td>                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %} 
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/carehomefilter.js') }}"></script>
+<script>
+    const carehomes = document.querySelectorAll('.carehome');
+
+    for(let carehome of carehomes) {
+        carehome.addEventListener('click', carehomeClick);
+        carehome.addEventListener('mouseover', carehomeHover);
+        carehome.addEventListener('mouseleave', carehomeUnHover);
+    }
+
+    function carehomeHover() {
+        this.style = 'background-color: lightgrey'
+    }
+
+    function carehomeUnHover() {
+        this.style = '';
+    }
+
+    function carehomeClick() {
+        window.location = '/carehome/' + this.getAttribute('data-id');
+    }
+</script>
+{% endblock %}

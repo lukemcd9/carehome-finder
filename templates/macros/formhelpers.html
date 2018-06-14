@@ -1,0 +1,33 @@
+{% macro render_field(field) %}
+    <div class="form-group">
+        <h4>{{ field.label }}</h4>
+        {{ field(**kwargs)|safe }}
+        {% if field.errors %}
+            <ul style="list-style: none">
+                {% for error in field.errors %}
+                    <li style="color: red">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro render_checkbox(field) %}
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6">
+                <h4>{{ field.label }}</h4>
+            </div>
+            <div class="col-sm-6">
+                {{ field(**kwargs)|safe }}
+            </div>
+            {% if field.errors %}
+            <ul style="list-style: none">
+                {% for error in field.errors %}
+                    <li style="color: red">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        </div>
+    </div>
+{% endmacro %}

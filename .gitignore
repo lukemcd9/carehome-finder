@@ -1,0 +1,7 @@
+.vscode/
+env/
+config.py
+Access_Data_base/
+__pycache__/
+*.pyc
+static/carehomes/
