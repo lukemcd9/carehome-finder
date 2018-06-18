@@ -35,7 +35,7 @@
                 <td>{{ carehome.operator.phone }}</td>
                 <td>{{ carehome.operator.address.email }}</td>
                 <td>{{ carehome.operator.certification.value }}</td>
-                <td>{{ carehome.type.value }}</td>
+                <td>{{ carehome.type.name }}</td>
                 {% if carehome.rooms|length > 1 %}
                     <td>
                         {{ carehome.rooms[0].type.value }}({{ carehome.rooms[0].amount }}), {{ carehome.rooms[1].type.value }}({{ carehome.rooms[1].amount }})

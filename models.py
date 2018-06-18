@@ -24,7 +24,7 @@ class CareHome(db.Model):
 
     class Type(Enum):
         ARCH = 'ARCH'
-        ARCH_EXPANDED = 'ARCH EXPANDED'
+        EXPANDED = 'EXPANDED'
         FOSTER = 'FOSTER'
 
     __tablename__ = 'carehome'

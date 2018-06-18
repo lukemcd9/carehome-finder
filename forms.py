@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import widgets, TextAreaField, StringField, IntegerField, SelectField, SelectMultipleField, BooleanField
-from wtforms.fields.html5 import EmailField, DateField
+from wtforms.fields.html5 import EmailField, DateField, TelField
 from wtforms.fields import RadioField
 import datetime
 
@@ -17,14 +17,14 @@ class CareHomeForm(FlaskForm):
     address_state = StringField('State')
     address_zip = IntegerField('Zip')
     email = EmailField('Email')
-    phone = StringField('Phone')
+    phone = TelField('Phone')
     certification = SelectField('Certification', choices=[('RN', 'RN'), ('LPN', 'LPN'), ('CNA', 'CNA')])
     license_expiration = DateField('License Expiration Date')
     case_management_company = StringField('Case Management Company')
     subs = IntegerField('How many subs do you have?')
     previous_experience = TextAreaField('What is your previous experience prior to opening care home?')
-    carehome_open_year = SelectField('What year did you open your care home', choices=[(x, x) for x in range(1980, datetime.datetime.now().year + 1)])
-    type = SelectField('Type', choices=[('ARCH', 'ARCH'), ('ARCH_EXPANDED', 'EXPANDED'), ('FOSTER', 'FOSTER')])
+    carehome_open_year = IntegerField('What year did you open your care home?')
+    type = SelectField('Type', choices=[('ARCH', 'ARCH'), ('EXPANDED', 'EXPANDED'), ('FOSTER', 'FOSTER')])
     private_rooms = IntegerField('Amount of Private Rooms')
     shared_rooms = IntegerField('Amount of Shared Rooms')
     min_price_private = IntegerField('Min Price of Private Rooms')

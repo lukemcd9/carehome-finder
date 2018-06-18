@@ -27,19 +27,20 @@ def delete_care_home(id):
 def edit_care_home(id):
     carehome = CareHome.query.filter_by(id=id).first()
     operator = carehome.operator
-    form = CareHomeForm(request.form)
     private_room = Room.query.filter_by(carehome_id=id, type=Room.Type.PRIVATE).first()
     shared_room = Room.query.filter_by(carehome_id=id, type=Room.Type.SHARED).first()
+    form = CareHomeForm(request.form)
     if request.method == 'GET':
         form.operator_name.data = operator.name
         form.carehome_name.data = carehome.name
         form.carehome_open_year.data = carehome.open_year
+        form.type.data = carehome.type.value
         form.case_management_company.data = carehome.case_management_company
         form.address_city.data = operator.address.city
         form.address_street.data = operator.address.street
         form.address_state.data = operator.address.state
         form.address_zip.data = operator.address.zip
-        form.certification.data = operator.certification
+        form.certification.data = operator.certification.value
         form.email.data = operator.address.email
         form.license_expiration.data = carehome.operator.license_expiration
         form.max_price_private.data = private_room.max_price
@@ -50,7 +51,7 @@ def edit_care_home(id):
         form.patient_age.data = carehome.patient_max_age
         form.patient_behavioral.data = carehome.behavioral_issues_patient
         form.patient_dialysis.data = carehome.dialysis_patient
-        form.patient_gender.data = carehome.patient_gender
+        form.patient_gender.data = carehome.patient_gender.value
         form.patient_hospice.data = carehome.hospice_patient
         form.patient_insulin.data = carehome.insulin_patient
         form.patient_medicaid.data = carehome.medicaid_patients
@@ -95,6 +96,7 @@ def edit_care_home(id):
         carehome.tube_feed_patient = form.patient_tube_feed.data
         carehome.max_weight_patient = form.patient_weight.data
         carehome.wounded_patient = form.patient_wounds.data
+        carehome.type = form.type.data
         operator.phone = form.phone.data
         carehome.subs = form.subs.data
         shared_room.amount = form.shared_rooms.data
@@ -170,6 +172,4 @@ def add_care_home():
         db.session.commit()
         flash('Care Home added', 'success')
         return redirect(url_for('care_homes'))
-    
-    print(form.patient_walking_device.data)
     return render_template('addcarehome.html', form=form)

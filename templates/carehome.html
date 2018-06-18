@@ -32,7 +32,7 @@
     <div class="col-md-6">
         <a class="btn btn-primary" href="{{url_for('edit_care_home', id=carehome.id)}}">Edit</a>
         <a class="btn btn-danger" href="{{url_for('delete_care_home', id=carehome.id)}}">Delete</a>
-        <h2><strong>{{ carehome.name }}</strong><br>({{carehome.type.value}})</h2>
+        <h2><strong>{{ carehome.name }}</strong><br>({{carehome.type.name}})</h2>
         <h3><strong>{{ carehome.operator.name }}</strong> ({{carehome.operator.certification.value}})</h3>
         <p>License Expiration Date: {{carehome.operator.license_expiration}}</p>
         <p>Phone: {{carehome.operator.phone}}</p>

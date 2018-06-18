@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Add Care Home{% endblock %}
+{% block title %}Edit Care Home{% endblock %}
 
 {% block body %}
     {% from 'macros/formhelpers.html' import render_field, render_checkbox %}
@@ -26,19 +26,19 @@
         {{ render_field(form.private_rooms, class_="form-control") }}
         {{ render_field(form.min_price_private, class_="form-control") }}
         {{ render_field(form.max_price_private, class_="form-control") }}
-        {{ render_checkbox(form.patient_gender, class_="form-control") }}
-        {{ render_checkbox(form.patient_age, class_="form-control") }}
-        {{ render_checkbox(form.patient_private, class_="form-control") }}
-        {{ render_checkbox(form.patient_medicaid, class_="form-control") }}
-        {{ render_checkbox(form.patient_ssi, class_="form-control") }}
-        {{ render_checkbox(form.patient_walking_device, class_="form-control") }}
-        {{ render_checkbox(form.patient_behavioral, class_="form-control") }}
-        {{ render_checkbox(form.patient_dialysis, class_="form-control") }}
-        {{ render_checkbox(form.patient_hospice, class_="form-control") }}
-        {{ render_checkbox(form.patient_insulin, class_="form-control") }}
-        {{ render_checkbox(form.patient_tube_feed, class_="form-control") }}
-        {{ render_checkbox(form.patient_wounds, class_="form-control") }}
-        {{ render_checkbox(form.patient_weight, class_="form-control") }}
+        {{ render_checkbox(form.patient_gender, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_age, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_private, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_medicaid, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_ssi, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_walking_device, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_behavioral, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_dialysis, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_hospice, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_insulin, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_tube_feed, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_wounds, class_="form-control checkbox") }}
+        {{ render_checkbox(form.patient_weight, class_="form-control checkbox") }}
         <input type="submit" value="Submit" class="btn btn-primary">
     </form>
 {% endblock %}
