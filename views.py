@@ -1,7 +1,8 @@
-from flask import render_template, request, redirect, url_for, flash
-from app import app, db
+from flask import render_template, request, redirect, url_for, flash, abort
+from app import app, db, photos
 from models import Operator, Address, CareHome, Room
 from forms import CareHomeForm
+import datetime
 import os
 
 
@@ -13,7 +14,58 @@ def care_homes():
 @app.route('/carehome/<id>')
 def care_home(id):
     carehome = CareHome.query.filter_by(id=id).first()
-    return render_template('carehome.html', carehome=carehome)
+
+    if carehome is None:
+        abort(404)
+
+    directory = '/static/carehomes/{0}/photos/'.format(id)
+    carousel = get_carousel_images(id)
+    profilepicture = get_sensitive_file(id, 'profilepicture')
+    if datetime.datetime.now() > carehome.operator.license_expiration:
+        flash('Operator\'s license has expired!', 'danger')
+    return render_template('carehome.html', carehome=carehome, carousel=carousel, profilepicture=profilepicture)
+
+def get_sensitive_file(id, filename):
+    directory = '/static/carehomes/{0}/sensitive/'.format(id)
+    if not os.path.exists('.' + directory):
+        os.makedirs('.' + directory)
+    for file in os.listdir('.' + directory):
+        if file.split('.')[0] == filename:
+            return directory + file
+    return None
+
+def get_carousel_images(id):
+    directory = '/static/carehomes/{0}/photos/'.format(id)
+    if not os.path.exists('.' + directory):
+        os.makedirs('.' + directory)
+    return [(directory + file) for file in os.listdir('.' + directory)]
+
+@app.route('/carehome/<id>/photos/upload', methods=['POST'])
+def upload_carehome_photo(id):
+    if 'photo' in request.files:
+        photos.save(request.files['photo'], folder='{0}/photos/'.format(id))
+        flash('Successfully added photo', 'success')
+        return redirect(url_for('care_home', id=id))
+    else:
+        flash('Failed to upload photo, did you upload an image?', 'warning')
+        return redirect(url_for('care_home', id=id))
+
+@app.route('/carehome/<id>/sensitive/upload/', methods=['POST'])
+def upload_sensitive(id):
+    if 'photo' in request.files:
+        directory = '/static/carehomes/{0}/sensitive/'.format(id)
+        if not os.path.exists('.' + directory):
+            os.makedirs('.' + directory)
+        for file in os.listdir('.' + directory):
+            if 'profilepicture' in file:
+                os.remove('.' + directory + file)
+        photos.save(request.files['photo'], folder='{0}/sensitive/'.format(id), name='profilepicture.{0}'.format(request.files['photo'].filename.split('.')[1]))
+        flash('Successfully uploaded', 'success')
+        return redirect(url_for('care_home', id=id))
+    else:
+        flash('That file type is not allowed to be uploaded', 'warning')
+        return redirect(url_for('care_home', id=id))
+
 
 @app.route('/carehome/<id>/delete')
 def delete_care_home(id):
@@ -22,6 +74,10 @@ def delete_care_home(id):
     db.session.commit()
     flash('Care Home deleted', 'success')
     return redirect(url_for('care_homes'))
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return '404', 404
 
 @app.route('/carehome/<id>/edit', methods=['GET', 'POST'])
 def edit_care_home(id):
@@ -38,7 +94,7 @@ def edit_care_home(id):
         form.case_management_company.data = carehome.case_management_company
         form.address_city.data = operator.address.city
         form.address_street.data = operator.address.street
-        form.address_state.data = operator.address.state
+        form.address_region.data = operator.address.region
         form.address_zip.data = operator.address.zip
         form.certification.data = operator.certification.value
         form.email.data = operator.address.email
@@ -73,8 +129,8 @@ def edit_care_home(id):
         carehome.open_year = form.carehome_open_year.data
         carehome.case_management_company = form.case_management_company.data
         operator.address.city = form.address_city.data
+        operator.address.region = form.address_region.data
         operator.address.street = form.address_street.data
-        operator.address.state = form.address_state.data
         operator.address.zip = form.address_zip.data
         operator.certification = form.certification.data
         operator.address.email = form.email.data
@@ -104,7 +160,7 @@ def edit_care_home(id):
         carehome.assistive_walking_devices = str(form.patient_walking_device.data).replace('[', '').replace(']', '').replace('\'', '')
         db.session.commit()
         flash('Care Home updated', 'success')
-        return redirect(url_for('care_homes'))
+        return redirect(url_for('care_home', id=carehome.id))
 
 
 @app.route('/carehome/add', methods=['GET', 'POST'])
@@ -120,8 +176,9 @@ def add_care_home():
         )
         address = Address (
             street=form.address_street.data, 
-            city=form.address_city.data, 
-            state=form.address_state.data, 
+            city=form.address_city.data,
+            region=form.address_region.data ,
+            state='HI', 
             zip=form.address_zip.data,
             email=form.email.data, 
             operator=operator

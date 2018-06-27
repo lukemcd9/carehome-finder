@@ -1,0 +1,45 @@
+<div class="modal" id="changeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change Picture</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="{{profilepicture}}" class="img-fluid" id="preview-img">
+                <form method=POST enctype=multipart/form-data action="{{ url_for('upload_sensitive', id=carehome.id) }}">
+                    <input id="file-upload" type="file" name="photo"/>
+                    <input id="file-upload-submit" class="btn btn-primary" type="submit" style="display: none;"/>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <label id="confirm-button" for="file-upload-submit" class="btn btn-primary" style="margin-top: .5rem">Confirm</label>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const profilePicture = document.querySelector('#profile-img');
+    const picturePreview = document.querySelector('#preview-img')
+    const profilePictureUpload = document.querySelector('#file-upload')
+    const confirmButton = document.querySelector('#confirm-button');
+
+    confirmButton.addEventListener('click', () => {
+        profilePicture.src = picturePreview.src
+    });
+    
+    profilePictureUpload.addEventListener('change', (event) => {
+        const target = event.target
+        let fileReader = new FileReader()
+        if(target.files && target.files[0]) {
+            fileReader.readAsDataURL(target.files[0])
+            fileReader.onload = function(e) {
+                picturePreview.src = this.result
+            }
+        }
+    })
+</script>

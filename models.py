@@ -50,6 +50,7 @@ class CareHome(db.Model):
     previous_experience = db.Column(db.Text())
     subs = db.Column(db.Integer())
     open_year = db.Column(db.Integer())
+    notes = db.Column(db.Text())
     operator_id = db.Column(db.Integer(), db.ForeignKey('operator.id'))
     rooms = db.relationship('Room', backref='carehome')
 
@@ -70,6 +71,7 @@ class Address(db.Model):
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     street = db.Column(db.String(100))
     city = db.Column(db.String(25))
+    region = db.Column(db.String(25))
     state = db.Column(db.String(2)) 
     zip = db.Column(db.Integer())
     email = db.Column(db.String(255))

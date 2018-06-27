@@ -5,6 +5,13 @@ for(let i = 0; i < carehomeSort.length; i++) {
     carehomeSort[i].addEventListener('click', event => {
         event.preventDefault()
         sortTable(i);
+        let icon = carehomeSort[i].querySelector('.fas');
+
+        if(icon.classList.contains('fa-chevron-up')) {
+            icon.classList = 'fas fa-chevron-down';
+        } else {
+            icon.classList = 'fas fa-chevron-up';
+        }
     });
 }
 

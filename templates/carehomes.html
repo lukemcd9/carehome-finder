@@ -7,23 +7,22 @@
         cursor: pointer;
     }
 </style>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css"> 
 {% endblock %} 
 
 {% block body %}
     <input type="search" id="carehome-filter" placeholder="Filter">
-    <table id="carehomes-table" class="table table-responsive table-striped display" style="width: 100%">
+    <table id="carehomes-table" class="table table-responsive table-striped">
         <thead>
             <tr>   
-                <th class="carehome-sorter">Operator</th>
-                <th class="carehome-sorter">Carehome</th>
-                <th class="carehome-sorter">City</th>
-                <th class="carehome-sorter">Phone</th>
-                <th class="carehome-sorter">Email</th>
-                <th class="carehome-sorter">Certification</th>
-                <th class="carehome-sorter">Type</th>
-                <th class="carehome-sorter">Rooms</th>
-                <th class="carehome-sorter">Openings</th>
+                <th scope="col" class="carehome-sorter">Operator<i class="fas fa-chevron-up"></i></th>
+                <th scope="col" class="carehome-sorter">Carehome<i class="fas fa-chevron-up"></i></th>
+                <th scope="col" class="carehome-sorter">City<i class="fas fa-chevron-up"></i></th>
+                <th scope="col" class="carehome-sorter">Phone<i class="fas fa-chevron-up"></i></th>
+                <th scope="col" class="carehome-sorter">Email<i class="fas fa-chevron-up"></i></th>
+                <th scope="col" class="carehome-sorter">Certification<i class="fas fa-chevron-up"></i></th>
+                <th scope="col" class="carehome-sorter">Type<i class="fas fa-chevron-up"></i></th>
+                <th scope="col" class="carehome-sorter">Rooms<i class="fas fa-chevron-up"></i></th>
+                <th scope="col" class="carehome-sorter">Openings<i class="fas fa-chevron-up"></i></th>
             </tr>
         </thead>
         <tbody>
@@ -41,7 +40,7 @@
                         {{ carehome.rooms[0].type.value }}({{ carehome.rooms[0].amount }}), {{ carehome.rooms[1].type.value }}({{ carehome.rooms[1].amount }})
                     </td>
                 {% else %}
-                <td>{{ carehome.rooms[0].type }}({{carehome.rooms[0].amount}})</td>
+                    <td>{{ carehome.rooms[0].type }}({{carehome.rooms[0].amount}})</td>
                 {% endif %}
                 <td>{{ carehome.open_rooms }}</td>                
             </tr>

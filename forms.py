@@ -14,7 +14,7 @@ class CareHomeForm(FlaskForm):
     carehome_name = StringField('Care Home Name')
     address_street = StringField('Address')
     address_city = StringField('City')
-    address_state = StringField('State')
+    address_region = StringField('Region')
     address_zip = IntegerField('Zip')
     email = EmailField('Email')
     phone = TelField('Phone')
@@ -45,3 +45,4 @@ class CareHomeForm(FlaskForm):
     patient_wounds = BooleanField('I accept patients with wounds')
     patient_weight = IntegerField('What is the max weight of patient you are able to work with?')
     open_rooms = IntegerField('Open Rooms')
+    notes = TextAreaField('Notes')
