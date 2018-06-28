@@ -11,7 +11,7 @@
                 <img src="{{profilepicture}}" class="img-fluid" id="preview-img">
                 <form method=POST enctype=multipart/form-data action="{{ url_for('upload_sensitive', id=carehome.id) }}">
                     <input id="file-upload" type="file" name="photo"/>
-                    <input id="file-upload-submit" class="btn btn-primary" type="submit" style="display: none;"/>
+                    <input id="file-upload-submit" type="submit" style="display: none;"/>
                 </form>
             </div>
             <div class="modal-footer">

@@ -20,10 +20,31 @@ def care_home(id):
 
     directory = '/static/carehomes/{0}/photos/'.format(id)
     carousel = get_carousel_images(id)
-    profilepicture = get_sensitive_file(id, 'profilepicture')
+    profilepicture = get_profile_picture(id)
     if datetime.datetime.now() > carehome.operator.license_expiration:
         flash('Operator\'s license has expired!', 'danger')
     return render_template('carehome.html', carehome=carehome, carousel=carousel, profilepicture=profilepicture)
+
+@app.route('/carehome/<id>/photos/<photo>/delete')
+def delete_photo(id, photo):
+    directory = '/static/carehomes/{0}/photos/'.format(id)
+    if not os.path.exists('.' + directory):
+        return redirect(url_for('care_home', id=id))
+
+    if photo in os.listdir('.' + directory):
+        os.remove('.' + directory + photo)
+        flash('Photo deleted', 'success')
+        return redirect(url_for('care_home', id=id))
+    flash('Couldn\'t delete image', 'info')
+    return redirect(url_for('care_home', id=id))
+
+def get_profile_picture(id):
+    directory = '/static/carehomes/{0}/sensitive/profilepicture/'.format(id)
+    if not os.path.exists('.' + directory):
+        os.makedirs('.' + directory)
+    if len(os.listdir('.' + directory)) == 0:
+        return url_for('static', filename='img/placeholder.svg')
+    return directory + os.listdir('.' + directory)[0]
 
 def get_sensitive_file(id, filename):
     directory = '/static/carehomes/{0}/sensitive/'.format(id)
@@ -53,13 +74,12 @@ def upload_carehome_photo(id):
 @app.route('/carehome/<id>/sensitive/upload/', methods=['POST'])
 def upload_sensitive(id):
     if 'photo' in request.files:
-        directory = '/static/carehomes/{0}/sensitive/'.format(id)
+        directory = '/static/carehomes/{0}/sensitive/profilepicture/'.format(id)
         if not os.path.exists('.' + directory):
             os.makedirs('.' + directory)
         for file in os.listdir('.' + directory):
-            if 'profilepicture' in file:
-                os.remove('.' + directory + file)
-        photos.save(request.files['photo'], folder='{0}/sensitive/'.format(id), name='profilepicture.{0}'.format(request.files['photo'].filename.split('.')[1]))
+            os.remove('.' + directory + file)
+        photos.save(request.files['photo'], folder='{0}/sensitive/profilepicture/'.format(id))
         flash('Successfully uploaded', 'success')
         return redirect(url_for('care_home', id=id))
     else:
@@ -118,6 +138,7 @@ def edit_care_home(id):
         form.patient_wounds.data = carehome.wounded_patient
         form.phone.data = operator.phone
         form.subs.data = carehome.subs
+        form.notes.data = carehome.notes
         form.shared_rooms.data = shared_room.amount
         form.private_rooms.data = private_room.amount
         form.patient_walking_device.data = str(carehome.assistive_walking_devices).replace('[', '').replace(']', '').replace('\'', '').split(', ')
@@ -155,6 +176,7 @@ def edit_care_home(id):
         carehome.type = form.type.data
         operator.phone = form.phone.data
         carehome.subs = form.subs.data
+        carehome.notes = form.notes.data
         shared_room.amount = form.shared_rooms.data
         private_room.amount = form.private_rooms.data
         carehome.assistive_walking_devices = str(form.patient_walking_device.data).replace('[', '').replace(']', '').replace('\'', '')
@@ -205,6 +227,7 @@ def add_care_home():
             previous_experience=form.previous_experience.data,
             subs=form.subs.data,
             open_year=form.carehome_open_year.data,
+            notes=form.notes.data,
             operator=operator 
         )
         private_rooms = Room (

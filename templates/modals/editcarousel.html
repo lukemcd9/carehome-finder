@@ -1,0 +1,59 @@
+<div class="modal" id="carouselModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change Carousel</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="position: relative;">
+                {% for i in range(carousel | length) %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <img src={{carousel[i]}} class="img-fluid" id="photo-{{i}}" style="padding-top: .5rem; padding-bottom: .5rem">
+                            <a style="display: none;" class="btn btn-danger bottom-right" id="delete-photo-{{i}}" href="{{ url_for('delete_photo', id=carehome.id, photo=carousel[i].split('/')[5])}}"><i class="fas fa-trash-alt"></i> Delete</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                
+            </div>
+            <div class="modal-footer">
+                <form method=POST enctype=multipart/form-data action="{{ url_for('upload_carehome_photo', id=carehome.id) }}">
+                    <input id="carousel-file-upload" type="file" name=photo style="display: none"/>
+                    <input id="carousel-file-upload-submit" type="submit" style="display: none"/>
+                </form>
+                <label for="carousel-file-upload" class="btn btn-primary" style="margin-top: .5rem"><i class="fas fa-image"></i> Browse</label>
+                <label for="carousel-file-upload-submit" class="btn btn-primary mr-auto" style="margin-top: .5rem">Add</label>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bottom-right {
+        position: absolute;
+        bottom: 8px;
+        right: 16px;
+    }
+</style>
+
+<script>
+    let length = "{{ carousel | length }}";
+    for(let i=0; i < parseInt(length); i++) {
+        const carouselPhotos = document.querySelector('#photo-' + i)
+        carouselPhotos.addEventListener('mouseover', function() { mouseOver(i) })
+        carouselPhotos.addEventListener('mouseleave', function() { mouseLeave(i) })
+    }
+
+    function mouseOver(index) {
+        const deleteButton = document.querySelector('#delete-photo-' + index)
+        deleteButton.style = '';
+    }
+
+    function mouseLeave(index) {
+        const deleteButton = document.querySelector('#delete-photo-' + index)
+        deleteButton.style = 'display: none;'
+    }
+</script>
