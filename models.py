@@ -80,7 +80,7 @@ class Address(db.Model):
 
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
-    username = db.Column(db.VARCHAR(255), nullable=False, unique=True)
+    username = db.Column(db.VARCHAR(255), nullable=False)
     password = db.Column(db.VARCHAR(255), nullable=False)
     user_id = db.Column(db.CHAR(36), nullable=False, primary_key=True)
 
