@@ -1,6 +1,7 @@
 from app import db
 from uuid import uuid4
 from enum import Enum
+from flask_login import UserMixin
 
 class Operator(db.Model):
     class Certification(Enum):
@@ -76,3 +77,17 @@ class Address(db.Model):
     zip = db.Column(db.Integer())
     email = db.Column(db.String(255))
     operator_id = db.Column(db.Integer(), db.ForeignKey('operator.id'))
+
+class User(UserMixin, db.Model):
+    __tablename__ = 'user'
+    username = db.Column(db.VARCHAR(255), nullable=False, unique=True)
+    password = db.Column(db.VARCHAR(255), nullable=False)
+    user_id = db.Column(db.CHAR(36), nullable=False, primary_key=True)
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.user_id = uuid4()
+
+    def get_id(self):
+        return self.user_id

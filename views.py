@@ -1,17 +1,58 @@
 from flask import render_template, request, redirect, url_for, flash, abort
 from app import app, db, photos
-from models import Operator, Address, CareHome, Room
-from forms import CareHomeForm
+from models import Operator, Address, CareHome, Room, User
+from forms import CareHomeForm, EditNotes, LoginForm
 import datetime
 import os
-
+from passlib.hash import sha512_crypt
+from flask_login import login_user, logout_user, login_required, current_user
 
 @app.route('/')
+def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('care_homes'))
+    return redirect(url_for('login'))
+
+
+@app.route('/carehomes')
+@login_required
 def care_homes():
     carehomes = CareHome.query.all()
     return render_template('carehomes.html', carehomes=carehomes)
 
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    form = LoginForm(request.form)
+    if request.method == 'POST':
+        username = form.username.data
+        password = form.password.data
+        user = User.query.filter_by(username=username).first()
+        
+        if user is not None:
+            if sha512_crypt.verify(password, user.password):
+                login_user(user)
+                flash('Logged in.', 'success')
+                return redirect(url_for('care_homes'))
+            else:
+                flash('Invalid username or password.', 'danger')
+                return redirect(url_for('care_homes'))
+        else:
+            flash('Invalid username or password.', 'danger')
+            return redirect(url_for('care_homes'))
+
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
 @app.route('/carehome/<id>')
+@login_required
 def care_home(id):
     carehome = CareHome.query.filter_by(id=id).first()
 
@@ -21,22 +62,50 @@ def care_home(id):
     directory = '/static/carehomes/{0}/photos/'.format(id)
     carousel = get_carousel_images(id)
     profilepicture = get_profile_picture(id)
+    edit_notes_form = EditNotes(request.form)
+    edit_notes_form.notes.data = carehome.notes
     if datetime.datetime.now() > carehome.operator.license_expiration:
         flash('Operator\'s license has expired!', 'danger')
-    return render_template('carehome.html', carehome=carehome, carousel=carousel, profilepicture=profilepicture)
+    return render_template('carehome.html', carehome=carehome, carousel=carousel, profilepicture=profilepicture, edit_notes_form=edit_notes_form)
+
+
+@app.route('/carehome/<id>/edit/notes', methods=['POST'])
+@login_required
+def edit_notes(id):
+    carehome = CareHome.query.filter_by(id=id).first()
+    form = EditNotes(request.form)
+    print(request.form)
+    if form.notes is not None:
+        carehome.notes = form.notes.data
+        db.session.commit()
+        flash('Successfully updated notes', 'success')
+        return redirect(url_for('care_home', id=id))
+    
+    flash('Couldn\'t edit notes', 'warning')
+    return redirect(url_for('care_home', id=id))
+
+
+@app.route('/carehome/<id>/gallery')
+@login_required
+def gallery(id):
+    images = get_carousel_images(id)
+    return render_template('gallery.html', images=images, id=id)
+
 
 @app.route('/carehome/<id>/photos/<photo>/delete')
+@login_required
 def delete_photo(id, photo):
     directory = '/static/carehomes/{0}/photos/'.format(id)
     if not os.path.exists('.' + directory):
-        return redirect(url_for('care_home', id=id))
+        return redirect(url_for('gallery', id=id))
 
     if photo in os.listdir('.' + directory):
         os.remove('.' + directory + photo)
         flash('Photo deleted', 'success')
-        return redirect(url_for('care_home', id=id))
+        return redirect(url_for('gallery', id=id))
+    
     flash('Couldn\'t delete image', 'info')
-    return redirect(url_for('care_home', id=id))
+    return redirect(url_for('gallery', id=id))
 
 def get_profile_picture(id):
     directory = '/static/carehomes/{0}/sensitive/profilepicture/'.format(id)
@@ -61,17 +130,23 @@ def get_carousel_images(id):
         os.makedirs('.' + directory)
     return [(directory + file) for file in os.listdir('.' + directory)]
 
+
 @app.route('/carehome/<id>/photos/upload', methods=['POST'])
+@login_required
 def upload_carehome_photo(id):
     if 'photo' in request.files:
-        photos.save(request.files['photo'], folder='{0}/photos/'.format(id))
-        flash('Successfully added photo', 'success')
-        return redirect(url_for('care_home', id=id))
+        files = request.files.getlist('photo')
+        for image in files:
+            photos.save(image, folder='{0}/photos/'.format(id))
+        flash('Successfully added {0} photos'.format(len(files)), 'success')
+        return redirect(url_for('gallery', id=id))
     else:
         flash('Failed to upload photo, did you upload an image?', 'warning')
-        return redirect(url_for('care_home', id=id))
+        return redirect(url_for('gallery', id=id))
+
 
 @app.route('/carehome/<id>/sensitive/upload/', methods=['POST'])
+@login_required
 def upload_sensitive(id):
     if 'photo' in request.files:
         directory = '/static/carehomes/{0}/sensitive/profilepicture/'.format(id)
@@ -88,6 +163,7 @@ def upload_sensitive(id):
 
 
 @app.route('/carehome/<id>/delete')
+@login_required
 def delete_care_home(id):
     carehome = CareHome.query.filter_by(id=id).first()
     db.session.delete(carehome)
@@ -99,7 +175,9 @@ def delete_care_home(id):
 def page_not_found(error):
     return '404', 404
 
+
 @app.route('/carehome/<id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_care_home(id):
     carehome = CareHome.query.filter_by(id=id).first()
     operator = carehome.operator
@@ -186,6 +264,7 @@ def edit_care_home(id):
 
 
 @app.route('/carehome/add', methods=['GET', 'POST'])
+@login_required
 def add_care_home():
     form = CareHomeForm(request.form)
 

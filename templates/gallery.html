@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block title %}Gallery{% endblock %}
+
+{% block body%}
+    <div class="col-md-12">
+        <div class="row">
+            <form method=POST enctype=multipart/form-data action="{{ url_for('upload_carehome_photo', id=id) }}">
+                <input id="carousel-file-upload" type="file" name=photo multiple style="display: none"/>
+                <input id="carousel-file-upload-submit" type="submit" style="display: none"/>
+            </form>
+            <label for="carousel-file-upload" class="btn btn-primary" style="margin-right: .5rem; margin-top: .5rem"><i class="fas fa-image"></i> Browse</label>
+            <label for="carousel-file-upload-submit" class="btn btn-primary mr-auto" style="margin-top: .5rem">Add Image</label>
+        </div>
+    
+        {% if images | length > 0 %}
+        <div class="main-img">
+            <img src="{{images[0]}}" id="current">
+            <a style="display: none;" class="btn btn-danger bottom-right" id="delete-photo" href="{{ url_for('delete_photo', id=id, photo=images[0].split('/')[4]) }}"><i class="fas fa-trash-alt"></i> Delete</a>
+        </div>
+
+        <div class="imgs">
+            {% for i in range(images | length) %}
+                <img class="fluid-img" id="photo-{{i}}" src="{{images[i]}}">
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .main-img {
+        padding-bottom: 5px;
+    }
+    .main-img img,
+    .imgs img {
+        width: 100%;
+    }
+    
+    .imgs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 5px;
+        padding-bottom: .5rem;
+    }
+    
+    /* Fade in animation */
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+        
+    .fade-in {
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in 1 forwards;
+    }
+
+    .bottom-right {
+        position: absolute;
+        bottom: .5rem;
+        right: 1.2rem;
+    }
+        
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const current = document.querySelector('#current');
+    const imgs = document.querySelectorAll('.imgs img');
+    const deleteButton = document.querySelector('#delete-photo');
+    const opacity = 0.6;
+    
+    if(imgs.length > 0) {
+        imgs[0].style.opacity = opacity;
+        
+        current.addEventListener('mouseover', mouseOver);
+        deleteButton.addEventListener('mouseover', mouseOver)
+        current.addEventListener('mouseleave', mouseLeave);
+        imgs.forEach(img => img.addEventListener('click', imgClick));
+    }
+
+    function imgClick(e) {
+        imgs.forEach(img => (img.style.opacity = 1));
+        current.classList = '';
+        current.src = e.target.src;
+    
+        current.classList.add('fade-in');
+        current.classList.add(e.target.id);
+    
+        setTimeout(() => current.classList.remove('fade-in'), 500);
+    
+        e.target.style.opacity = opacity;
+    }
+
+    function mouseOver(e) {
+        deleteButton.style = '';
+
+        let imageFile = ''
+        for(let index of e.target.src.split('/')) {
+            if((/\.(gif|jpg|jpeg|tiff|png)$/i).test(index)) {
+                console.log(index)
+                imageFile = index;
+            }     
+        }
+        deleteButton.href = '/carehome/{{id}}/photos/'+ imageFile + '/delete';
+    }
+
+    function mouseLeave(e) {
+        deleteButton.style = 'display: none;'
+    }
+</script>
+{% endblock %}

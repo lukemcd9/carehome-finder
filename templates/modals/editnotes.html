@@ -1,0 +1,24 @@
+{% from 'macros/formhelpers.html' import render_field %}
+
+<div class="modal" id="editnotesModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('edit_notes', id=carehome.id) }}" enctype="multipart/form-data">
+                    {{ edit_notes_form.csrf_token() }}
+                    {{ render_field(edit_notes_form.notes, class_="form-control", id="editor") }}
+                    <input type="submit" id="notes-submit" style="display: none;">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <label for="notes-submit" class="btn btn-primary" style="margin-top: .5rem">Save</label>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

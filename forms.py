@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import widgets, TextAreaField, StringField, IntegerField, SelectField, SelectMultipleField, BooleanField
+from wtforms import widgets, TextAreaField, StringField, IntegerField, SelectField, SelectMultipleField, BooleanField, PasswordField
 from wtforms.fields.html5 import EmailField, DateField, TelField
 from wtforms.fields import RadioField
 import datetime
@@ -46,3 +46,10 @@ class CareHomeForm(FlaskForm):
     patient_weight = IntegerField('What is the max weight of patient you are able to work with?')
     open_rooms = IntegerField('Open Rooms')
     notes = TextAreaField('Notes')
+
+class EditNotes(FlaskForm):
+    notes = TextAreaField('Edit Notes')
+
+class LoginForm(FlaskForm):
+    username = StringField('Username')
+    password = PasswordField('Password')

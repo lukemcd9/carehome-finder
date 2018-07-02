@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% from 'macros/formhelpers.html' import render_field, render_checkbox %}
+
+{% block body %}
+    <form action="{{ url_for('login') }}" method="POST">
+        {{ render_field(form.username, class_="form-control") }}
+        {{ render_field(form.password, class_="form-control") }}
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

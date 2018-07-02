@@ -12,6 +12,16 @@
     </div>
 {% endmacro %}
 
+{% macro textarea(value='', rows=10, cols=40) %}
+    <div class="form-group">
+        <h4>{{ name }}</h4>
+        <textarea name="{{ name }}" rows="{{ rows }}" cols="{{ cols}}" class="form-control">
+            {{ value|e }}
+        </textarea>
+    </div>
+    
+{% endmacro %}
+
 {% macro render_checkbox(field) %}
     <div class="form-group">
         <div class="row">
