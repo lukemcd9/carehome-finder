@@ -6,11 +6,17 @@
     <div class="col-md-12">
         <div class="row">
             <form method=POST enctype=multipart/form-data action="{{ url_for('upload_carehome_photo', id=id) }}">
-                <input id="carousel-file-upload" type="file" name=photo multiple style="display: none"/>
-                <input id="carousel-file-upload-submit" type="submit" style="display: none"/>
+                <div class="input-group mb-3">
+                    <div class="custom-file">
+                        <input type="file" name=photo multiple class="custom-file-input" id="carousel-file-upload">
+                        <input id="carousel-file-upload-submit" type="submit" style="display: none"/>
+                        <label class="custom-file-label" for="carousel-file-upload"><i class="fas fa-image"></i> Choose an image</label>
+                    </div>
+                    <div class="input-group-append">
+                        <label for="carousel-file-upload-submit" class="btn btn-primary mr-auto">Upload</label>
+                    </div>
+                </div>
             </form>
-            <label for="carousel-file-upload" class="btn btn-primary" style="margin-right: .5rem; margin-top: .5rem"><i class="fas fa-image"></i> Browse</label>
-            <label for="carousel-file-upload-submit" class="btn btn-primary mr-auto" style="margin-top: .5rem">Add Image</label>
         </div>
     
         {% if images | length > 0 %}
@@ -32,6 +38,9 @@
 <style>
     .main-img {
         padding-bottom: 5px;
+        position:relative;
+        display:inline-block;
+        text-align:center;
     }
     .main-img img,
     .imgs img {
@@ -56,11 +65,11 @@
         opacity: 0;
         animation: fadeIn 0.5s ease-in 1 forwards;
     }
-
+    
     .bottom-right {
-        position: absolute;
-        bottom: .5rem;
-        right: 1.2rem;
+        position:absolute;
+        bottom:15px;
+        right:10px;
     }
         
 </style>
