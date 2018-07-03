@@ -23,7 +23,7 @@ class CareHomeForm(FlaskForm):
     license_expiration = DateField('License Expiration Date', default=datetime.datetime.now(), validators=[DataRequired()])
     case_management_company = StringField('Case Management Company', validators=[DataRequired()])
     subs = IntegerField('How many subs do you have?', default=0, validators=[DataRequired()])
-    # previous_experience = TextAreaField('What is your previous experience prior to opening care home?')
+    previous_experience = TextAreaField('What is your previous experience prior to opening care home?')
     carehome_open_year = IntegerField('What year did you open your care home?', default=datetime.datetime.now().year, validators=[DataRequired()])
     type = SelectField('Type', choices=[('ARCH', 'ARCH'), ('EXPANDED', 'EXPANDED'), ('FOSTER', 'FOSTER')], validators=[DataRequired()])
     private_rooms = IntegerField('Amount of Private Rooms', validators=[DataRequired()])
