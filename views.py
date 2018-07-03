@@ -36,10 +36,10 @@ def login():
                 return redirect(url_for('care_homes'))
             else:
                 flash('Invalid username or password.', 'danger')
-                return redirect(url_for('care_homes'))
+                return redirect(url_for('login'))
         else:
             flash('Invalid username or password.', 'danger')
-            return redirect(url_for('care_homes'))
+            return redirect(url_for('login'))
 
     return render_template('login.html', form=form)
 
