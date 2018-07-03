@@ -5,6 +5,7 @@ from forms import CareHomeForm, EditNotes, LoginForm
 import datetime
 import os
 from passlib.hash import sha512_crypt
+from flask_uploads import UploadNotAllowed
 from flask_login import login_user, logout_user, login_required, current_user
 
 @app.route('/')
@@ -137,7 +138,11 @@ def upload_carehome_photo(id):
     if 'photo' in request.files:
         files = request.files.getlist('photo')
         for image in files:
-            photos.save(image, folder='{0}/photos/'.format(id))
+            try:
+                photos.save(image, folder='{0}/photos/'.format(id))
+            except UploadNotAllowed:
+                flash('That type of file is not allowed!', 'danger')
+                return redirect(url_for('gallery', id=id))
         flash('Successfully added {0} photos'.format(len(files)), 'success')
         return redirect(url_for('gallery', id=id))
     else:
@@ -154,7 +159,11 @@ def upload_sensitive(id):
             os.makedirs('.' + directory)
         for file in os.listdir('.' + directory):
             os.remove('.' + directory + file)
-        photos.save(request.files['photo'], folder='{0}/sensitive/profilepicture/'.format(id))
+        try:
+            photos.save(request.files['photo'], folder='{0}/sensitive/profilepicture/'.format(id))
+        except UploadNotAllowed:
+            flash('That type of file is not allowed!', 'danger')
+            return redirect(url_for('care_home', id=id))
         flash('Successfully uploaded', 'success')
         return redirect(url_for('care_home', id=id))
     else:

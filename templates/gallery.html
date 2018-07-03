@@ -6,15 +6,10 @@
     <div class="col-md-12">
         <div class="row">
             <form method=POST enctype=multipart/form-data action="{{ url_for('upload_carehome_photo', id=id) }}">
-                <div class="input-group mb-3">
-                    <div class="custom-file">
-                        <input type="file" name=photo multiple class="custom-file-input" id="carousel-file-upload">
-                        <input id="carousel-file-upload-submit" type="submit" style="display: none"/>
-                        <label class="custom-file-label" for="carousel-file-upload"><i class="fas fa-image"></i> Choose an image</label>
-                    </div>
-                    <div class="input-group-append">
-                        <label for="carousel-file-upload-submit" class="btn btn-primary mr-auto">Upload</label>
-                    </div>
+                <div class="form-group">
+                    <input type="file" name=photo multiple id="carousel-file-upload">
+                    <input id="carousel-file-upload-submit" type="submit" style="display: none"/>
+                    <label for="carousel-file-upload-submit" class="btn btn-primary">Add Photos</label>
                 </div>
             </form>
         </div>
